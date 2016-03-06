@@ -6,6 +6,7 @@ class MinuteField extends AbstractField
 {
     /**
      * @param \DateTimeInterface $dateTime
+     *
      * @return mixed
      */
     public function getTime(\DateTimeInterface $dateTime)

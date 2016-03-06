@@ -30,23 +30,23 @@ class SchedulerSpec extends ObjectBehavior
     }
 
     function it_run_tasks(
-        TaskProviderInterface $taskProvider, 
-        SomeTask $task, 
+        TaskProviderInterface $taskProvider,
+        SomeTask $task,
         CronTime $cronTime,
         EventDispatcherInterface $eventDispatcher
     ) {
         $taskProvider->getTasks()->willReturn([$task]);
-        
+
         $task->getCronTime()->willReturn($cronTime);
-        
+
         $cronTime->isMatch(Argument::type(\DateTime::class))->willReturn(true);
-        
+
         $eventDispatcher->dispatch(TaskEvents::TASK_STARTED, Argument::type(TaskStartedEvent::class))->shouldBeCalled();
-        
+
         $task->execute(Argument::type(ArrayInput::class), Argument::type(BufferedOutput::class))->shouldBeCalled();
 
         $eventDispatcher->dispatch(TaskEvents::TASK_FINISHED, Argument::type(TaskFinishedEvent::class))->shouldBeCalled();
-        
+
         $this->addProvider($taskProvider);
 
         $this->run();
@@ -70,9 +70,8 @@ class SchedulerSpec extends ObjectBehavior
         $this->addProvider($taskProvider);
 
         $this->runWithName('task_name');
-
     }
-    
+
     function it_get_all_tasks(
         TaskProviderInterface $taskProvider,
         SomeTask $task
@@ -96,18 +95,22 @@ class SchedulerSpec extends ObjectBehavior
 
         $this->getWithName('task_name')->shouldReturn($task);
     }
-    
+
     function it_throw_exception_if_task_with_name_not_found(TaskProviderInterface $taskProvider)
     {
         $taskProvider->getTasks()->willReturn([]);
-        
+
         $this->shouldThrow(SchedulerBundleException::class)->duringGetWithName('task_name');
     }
 }
 
 class SomeTask extends Command implements TaskInterface
 {
-    public function execute(InputInterface $input, OutputInterface $output){}
+    function execute(InputInterface $input, OutputInterface $output)
+    {
+    }
 
-    public function getCronTime(){}
+    function getCronTime()
+    {
+    }
 }

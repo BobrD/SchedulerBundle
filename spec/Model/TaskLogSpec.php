@@ -3,7 +3,6 @@
 namespace spec\BobrD\SchedulerBundle\Entity;
 
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -33,7 +32,7 @@ class TaskLogSpec extends ObjectBehavior
     {
         $this->getStartedAt()->shouldBeAnInstanceOf(\DateTime::class);
     }
-    
+
     function it_return_null_if_task_not_finished()
     {
         $this->getFinishedAt()->shouldBeNull();
@@ -46,7 +45,7 @@ class TaskLogSpec extends ObjectBehavior
         $this->getStackTrace()->shouldBeNull();
         $this->getExecutedTime()->shouldBeNull();
     }
-    
+
     function it_can_be_marked_as_finished()
     {
         $this->markAsFinished(true, 'some_output');
@@ -59,11 +58,11 @@ class TaskLogSpec extends ObjectBehavior
         $this->getExecutedTime()->shouldBeAnInstanceOf(\DateInterval::class);
         $this->getFinishedAt()->shouldBeAnInstanceOf(\DateTime::class);
     }
-    
+
     function it_can_return_stackTrace_if_failed()
     {
         $this->markAsFinished(false, 'some_output', 'some_trace');
-        
+
         $this->getStackTrace()->shouldBe('some_trace');
     }
 }

@@ -5,18 +5,16 @@ namespace spec\BobrD\SchedulerBundle\Services\Scheduler;
 use BobrD\SchedulerBundle\Services\Scheduler\CronTime;
 use BobrD\SchedulerBundle\Services\Scheduler\Exception\SchedulerException;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 /**
  * @mixin CronTime
  */
 class CronTimeSpec extends ObjectBehavior
 {
-
     function it_throw_exception_if_pattern_is_invalid()
     {
         $this->beConstructedWith('* * *');
-        
+
         $this->shouldThrow(SchedulerException::class)->duringInstantiation();
     }
 
@@ -32,7 +30,7 @@ class CronTimeSpec extends ObjectBehavior
         $this->isMatch($date)->shouldBe($expected);
     }
 
-    public function timeDataSet()
+    function timeDataSet()
     {
         return [
             ['2015-12-30 22:50', '* * * * *', true],

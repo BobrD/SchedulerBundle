@@ -36,8 +36,8 @@ class Scheduler
 
     /**
      * @param EventDispatcherInterface $eventDispatcher
-     * @param LoggerInterface $logger
-     * @param bool $runInSubProcess
+     * @param LoggerInterface          $logger
+     * @param bool                     $runInSubProcess
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
@@ -125,7 +125,7 @@ class Scheduler
             $this->execute($task);
         }
     }
-    
+
     /**
      * @param TaskInterface $task
      */
@@ -135,7 +135,7 @@ class Scheduler
             $this->logger->warning(
                 'Task should be runned in sub process, but runned in main process, because function "pcntl_fork" don\'t exists.'
             );
-           
+
             $this->execute($task);
         }
 
@@ -145,7 +145,7 @@ class Scheduler
             $this->logger->warning(
                 'Task should be runned in sub process, but runned in main process, because cannot make fork.'
             );
-                
+
             $this->execute($task);
         } elseif (0 === $pid) {
             $this->execute($task);

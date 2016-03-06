@@ -6,7 +6,6 @@ use BobrD\SchedulerBundle\Services\Scheduler\TaskInterface;
 use BobrD\SchedulerBundle\Services\Scheduler\TaskProviderInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SymfonyCommandProvider implements TaskProviderInterface
 {

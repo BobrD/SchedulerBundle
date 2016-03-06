@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class SchedulerBundle extends Bundle
 {
-    public function boot()
+    public function __construct()
     {
         if (!Type::hasType('uuid')) {
             Type::addType('uuid', UuidType::class);
@@ -23,7 +23,7 @@ class SchedulerBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new AddTaskProviderPass());
-        
+
         $this->addRegisterMappingsPass($container);
     }
 
@@ -33,9 +33,9 @@ class SchedulerBundle extends Bundle
     private function addRegisterMappingsPass(ContainerBuilder $container)
     {
         $mappings = [
-            realpath(__DIR__ . '/Resources/config/doctrine/model') => 'BobrD\SchedulerBundle\Model',
+            realpath(__DIR__.'/Resources/config/doctrine/model') => 'BobrD\SchedulerBundle\Model',
         ];
-        
+
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass')) {
             $container->addCompilerPass(DoctrineOrmMappingsPass::createXmlMappingDriver($mappings));
         }

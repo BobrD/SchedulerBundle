@@ -2,9 +2,8 @@
 
 namespace BobrD\SchedulerBundle\Services\Scheduler\Field;
 
-class MonthField extends AbstractField 
+class MonthField extends AbstractField
 {
-    // todo not implements
     const MONTH_CODES_PATTERN = '(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)';
 
     /**

@@ -6,19 +6,19 @@ abstract class AbstractField
 {
     const TIME_PATTERN = '(?:\d+)';
 
-    const ALWAYS_FIELD = 'always';
+    const FIELD_ALWAYS = 'always';
 
-    const EVERY_FIELD = 'every';
+    const FIELD_EVERY = 'every';
 
-    const SPECIFIC_FIELD = 'specific';
+    const FIELD_SPECIFIC = 'specific';
 
-    const RANGE_FIELD = 'range';
+    const FIELD_RANGE = 'range';
 
-    const COMMA_FIELD = 'comma';
+    const FIELD_COMMA = 'comma';
 
-    const COMMA_EVERY_FIELD = 'commaEvery';
+    const FIELD_COMMA_EVERY = 'commaEvery';
 
-    const RANGE_EVERY_FIELD = 'rangeEvery';
+    const FIELD_RANGE_EVERY = 'rangeEvery';
 
     /**
      * @var string
@@ -43,12 +43,33 @@ abstract class AbstractField
      */
     public function field($field)
     {
-        $type = $this->getFieldType($field);
-
-        $this->{'check'.ucfirst($type)}($field);
-
-        $this->fieldType = $type;
         $this->field = $field;
+        $this->fieldType = $this->getFieldType($field);
+
+        switch ($this->fieldType) {
+            case self::FIELD_ALWAYS:
+                break;
+            case self::FIELD_EVERY:
+                $this->checkEvery($field);
+                break;
+            case self::FIELD_SPECIFIC:
+                $this->checkSpecific($field);
+                break;
+            case self::FIELD_RANGE:
+                $this->checkRange($field);
+                break;
+            case self::FIELD_COMMA:
+                $this->checkComma($field);
+                break;
+            case self::FIELD_COMMA_EVERY:
+                $this->checkCommaEvery($field);
+                break;
+            case self::FIELD_RANGE_EVERY:
+                $this->checkRangeEvery($field);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -67,7 +88,35 @@ abstract class AbstractField
     {
         $time = $this->getTime($dateTime);
 
-        return $this->{'match'.ucfirst($this->fieldType)}($time, $this->field);
+        $result = false;
+
+        switch ($this->fieldType) {
+            case self::FIELD_ALWAYS:
+                $result = $this->matchAlways();
+                break;
+            case self::FIELD_EVERY:
+                $result = $this->matchEvery($time, $this->field);
+                break;
+            case self::FIELD_SPECIFIC:
+                $result = $this->matchSpecific($time, $this->field);
+                break;
+            case self::FIELD_RANGE:
+                $result = $this->matchRange($time, $this->field);
+                break;
+            case self::FIELD_COMMA:
+                $result = $this->matchComma($time, $this->field);
+                break;
+            case self::FIELD_COMMA_EVERY:
+                $result = $this->matchCommaEvery($time, $this->field);
+                break;
+            case self::FIELD_RANGE_EVERY:
+                $result = $this->matchRangeEvery($time, $this->field);
+                break;
+            default:
+                break;
+        }
+
+        return $result;
     }
 
     /**
@@ -97,15 +146,9 @@ abstract class AbstractField
     }
 
     /**
-     * @return bool
-     */
-    private function checkAlways()
-    {
-        return true;
-    }
-
-    /**
-     * @param $value
+     * @param mixed $value
+     *
+     * @throws \InvalidArgumentException
      */
     private function checkInterval($value)
     {
@@ -118,6 +161,8 @@ abstract class AbstractField
 
     /**
      * @param string $field ex: 1-10
+     *
+     * @throws \InvalidArgumentException
      */
     private function checkRange($field)
     {
@@ -137,16 +182,30 @@ abstract class AbstractField
     }
 
     /**
-     * @param $minute
+     * @param string $field
      */
-    private function checkEvery($minute)
+    private function checkEvery($field)
     {
-        $every = intval(explode('/', $minute)[1]);
+        $every = intval(explode('/', $field)[1]);
         $this->checkInterval($every);
     }
 
     /**
+     * @param string $field
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkSpecific($field)
+    {
+        if ($field < $this->getLowerBoundary() || $field > $this->getUpperBoundary()) {
+            throw new \InvalidArgumentException();
+        }
+    }
+
+    /**
      * @param string $field ex: 2,4,5
+     *
+     * @throws \InvalidArgumentException
      */
     private function checkComma($field)
     {
@@ -166,6 +225,8 @@ abstract class AbstractField
 
     /**
      * @param string $field ex: 2,4,5/2
+     *
+     * @throws \InvalidArgumentException
      */
     private function checkCommaEvery($field)
     {
@@ -182,6 +243,8 @@ abstract class AbstractField
 
     /**
      * @param string $field ex 1-9/2
+     *
+     * @throws \InvalidArgumentException
      */
     private function checkRangeEvery($field)
     {
@@ -312,6 +375,8 @@ abstract class AbstractField
      * @param $field
      *
      * @return string one of field type
+     *
+     * @throws \InvalidArgumentException
      */
     private function getFieldType($field)
     {
@@ -322,12 +387,13 @@ abstract class AbstractField
         }
 
         $availableFieldType = [
-            self::ALWAYS_FIELD,
-            self::EVERY_FIELD,
-            self::RANGE_FIELD,
-            self::COMMA_FIELD,
-            self::COMMA_EVERY_FIELD,
-            self::RANGE_EVERY_FIELD,
+            self::FIELD_ALWAYS,
+            self::FIELD_EVERY,
+            self::FIELD_SPECIFIC,
+            self::FIELD_RANGE,
+            self::FIELD_COMMA,
+            self::FIELD_COMMA_EVERY,
+            self::FIELD_RANGE_EVERY,
         ];
 
         foreach ($availableFieldType as $fieldTypeName) {
@@ -348,13 +414,13 @@ abstract class AbstractField
 
         return '
             /
-                (?<'.self::ALWAYS_FIELD.'>^\*$)|
-                (?<'.self::EVERY_FIELD.'>^\*\/'.$fullTimePattern.'+$)|
-                (?<'.self::SPECIFIC_FIELD.'>^'.$fullTimePattern.'+$)|
-                (?<'.self::RANGE_FIELD.'>^'.$fullTimePattern.'-'.$fullTimePattern.'$)|
-                (?<'.self::COMMA_FIELD.'>^'.$fullTimePattern.'(?:,\d+)+$)|
-                (?<'.self::COMMA_EVERY_FIELD.'>^'.$fullTimePattern.'(?:,'.$fullTimePattern.')+\/\d+$)|
-                (?<'.self::RANGE_EVERY_FIELD.'>^'.$fullTimePattern.'-'.$fullTimePattern.'\/\d+$)
+                (?<'.self::FIELD_ALWAYS.'>^\*$)|
+                (?<'.self::FIELD_EVERY.'>^\*\/'.$fullTimePattern.'+$)|
+                (?<'.self::FIELD_SPECIFIC.'>^'.$fullTimePattern.'+$)|
+                (?<'.self::FIELD_RANGE.'>^'.$fullTimePattern.'-'.$fullTimePattern.'$)|
+                (?<'.self::FIELD_COMMA.'>^'.$fullTimePattern.'(?:,\d+)+$)|
+                (?<'.self::FIELD_COMMA_EVERY.'>^'.$fullTimePattern.'(?:,'.$fullTimePattern.')+\/\d+$)|
+                (?<'.self::FIELD_RANGE_EVERY.'>^'.$fullTimePattern.'-'.$fullTimePattern.'\/\d+$)
             /xi
             ';
     }
