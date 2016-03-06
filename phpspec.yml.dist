@@ -1,0 +1,15 @@
+suites:
+    main:
+        namespace: BobrD\SchedulerBundle
+        psr4_prefix: BobrD\SchedulerBundle
+        src_path: .
+
+extensions:
+  - Coduo\PhpSpec\DataProvider\DataProviderExtension
+  - PhpSpec\Extension\CodeCoverageExtension
+
+code_coverage:
+  format:
+    - html
+  output:
+    html: coverage

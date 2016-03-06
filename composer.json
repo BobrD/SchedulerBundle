@@ -1,0 +1,30 @@
+{
+    "name": "bobrd/scheduler-bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "description": "Cron scheduler bundle",
+    "autoload": {
+        "psr-4": {
+            "BobrD\\SchedulerBundle\\": ""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BobrD\\SchedulerBundle\\spec\\": "spec/"
+        }
+    },
+    "require": {
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~2.3|~3.0",
+        "symfony/symfony": "3.0.*",
+        "rhumsaa/uuid": "^2.8",
+        "ramsey/uuid-doctrine": "^1.1"
+    },
+    "require-dev": {
+        "coduo/phpspec-data-provider-extension": "^1.0",
+        "henrikbjorn/phpspec-code-coverage": "^2.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}

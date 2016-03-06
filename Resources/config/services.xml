@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+       <parameter key="bobrd.scheduler.task_log_model.class">BobrD\SchedulerBundle\Model\TaskLog</parameter>
+   </parameters>
+
+    <services>
+
+        <service id="scheduler" alias="scheduler.scheduler" />
+
+        <service id="scheduler.scheduler" class="BobrD\SchedulerBundle\Services\Scheduler\Scheduler">
+            <argument type="service" id="event_dispatcher" />
+            <argument type="service" id="logger" />
+        </service>
+
+        <service id="scheduler.symfony_command_provider" class="BobrD\SchedulerBundle\Services\SymfonyCommandProvider" public="false">
+            <argument type="service" id="scheduler.console_application" />
+            <tag name="scheduler.task_provider" />
+        </service>
+
+        <service id="scheduler.console_application" class="Symfony\Bundle\FrameworkBundle\Console\Application" public="false">
+            <argument type="service" id="kernel" />
+        </service>
+
+        <service id="scheduler.task_log_repository" class="BobrD\SchedulerBundle\Doctrine\ORM\TaskLogRepository">
+            <argument>%bobrd.scheduler.task_log_model.class%</argument>
+            <factory service="doctrine" method="getRepository" />
+        </service>
+
+        <service id="scheduler.task_subscriber" class="BobrD\SchedulerBundle\EventListener\TaskSubscriber">
+            <argument type="service" id="scheduler.task_log_repository" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+    </services>
+
+</container>
