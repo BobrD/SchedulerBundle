@@ -22,11 +22,11 @@
 
         <field name="startedAt" type="datetime" column="started_at" />
 
-        <field name="finishedAt" type="datetime" column="finished_at" />
+        <field name="finishedAt" type="datetime" column="finished_at" nullable="true" />
 
         <field name="started" type="boolean" column="started" />
 
-        <field name="executeStatus" type="string" column="execute_status" nullable="true" />
+        <field name="executedStatus" type="string" column="execute_status" nullable="true" />
 
         <field name="output" type="string" column="output" nullable="true" />
 

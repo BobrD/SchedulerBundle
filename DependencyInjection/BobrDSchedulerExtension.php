@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\Config\FileLocator;
 
-class SchedulerExtension extends Extension
+class BobrDSchedulerExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {

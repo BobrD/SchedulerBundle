@@ -49,7 +49,7 @@ class TaskLog
     /**
      * @var null|string
      */
-    private $executeStatus;
+    private $executedStatus;
 
     /**
      * @var null|string
@@ -139,7 +139,7 @@ class TaskLog
         $this->finishedAt = new \DateTime();
         $this->started = false;
 
-        $this->executeStatus = $success ? self::EXECUTE_STATUS_SUCCESS : self::EXECUTE_STATUS_FAIL;
+        $this->executedStatus = $success ? self::EXECUTE_STATUS_SUCCESS : self::EXECUTE_STATUS_FAIL;
 
         $this->output = $output;
         $this->stackTrace = $stackTrace;
@@ -172,7 +172,7 @@ class TaskLog
             return;
         }
 
-        return $this->executeStatus === self::EXECUTE_STATUS_SUCCESS;
+        return $this->executedStatus === self::EXECUTE_STATUS_SUCCESS;
     }
 
     /**
