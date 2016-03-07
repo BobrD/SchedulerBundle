@@ -9,7 +9,7 @@ use BobrD\SchedulerBundle\DependencyInjection\Compiler\AddTaskProviderPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class SchedulerBundle extends Bundle
+class BobrDSchedulerBundle extends Bundle
 {
     public function __construct()
     {

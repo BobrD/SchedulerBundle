@@ -16,6 +16,7 @@
     "require": {
         "php": ">=5.5.9",
         "symfony/framework-bundle": "~2.3|~3.0",
+        "doctrine/doctrine-bundle": "^1.6",
         "symfony/symfony": "3.0.*",
         "rhumsaa/uuid": "^3.2",
         "ramsey/uuid-doctrine": "^1.1"
