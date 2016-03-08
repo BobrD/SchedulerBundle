@@ -66,7 +66,9 @@ class Scheduler
 
         foreach ($this->getTasks() as $task) {
             if ($task->getCronTime()->isMatch($now)) {
-                $this->doRun($task);
+                if ($this->doRun($task)) {
+                    break;
+                }
             }
         }
     }
@@ -116,18 +118,26 @@ class Scheduler
 
     /**
      * @param TaskInterface $task
+     *
+     * @return bool
      */
     private function doRun(TaskInterface $task)
     {
         if ($this->runInSubProcess) {
-            $this->runInSubProcess($task);
-        } else {
-            $this->execute($task);
+            return $this->runInSubProcess($task);
         }
+
+        $this->execute($task);
+
+        return false;
     }
 
     /**
+     * Run task in sub process and return true if need break from loop.
+     *
      * @param TaskInterface $task
+     *
+     * @return bool Marker break from loop.
      */
     private function runInSubProcess(TaskInterface $task)
     {
@@ -137,6 +147,8 @@ class Scheduler
             );
 
             $this->execute($task);
+
+            return false;
         }
 
         $pid = pcntl_fork();
@@ -147,10 +159,16 @@ class Scheduler
             );
 
             $this->execute($task);
+
+            return false;
         } elseif (0 === $pid) {
+            // child process
             $this->execute($task);
-            exit;
+
+            return true;
         }
+
+        return false;
     }
 
     /**

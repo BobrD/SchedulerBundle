@@ -26,7 +26,7 @@
 
         <field name="started" type="boolean" column="started" />
 
-        <field name="executedStatus" type="string" column="execute_status" nullable="true" />
+        <field name="executedStatus" type="string" column="executed_status" nullable="true" />
 
         <field name="output" type="string" column="output" nullable="true" />
 
